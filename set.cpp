@@ -59,12 +59,18 @@ bool isElementof(string data,myset* set);
 
 void RemoveSet(string data,myset* set)
 {
+    if(set->size==0)
+    {
+        cout<<"Set already empty!\n";
+        return;
+    }
     int hashindex=hashFunction(data);
     if(set->hash[hashindex].empty==false)
     {
         if(isElementof(data,set))
         {
             set->hash[hashindex].elist.remove(data);
+            set->size--;
         }
     }
 
