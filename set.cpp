@@ -1,4 +1,4 @@
-#include<iostream>
+ #include<iostream>
 #include<bits/stdc++.h>
 using namespace std;
 #define MAX 101
@@ -334,7 +334,7 @@ void PrintSet(myset* set)
 {
     Node* ptr=enumerate(set);
     Node* temp=ptr;
-    cout<<"[";
+    cout<<"\nThe resultant set is\n\t[";
     while(temp!=NULL)
     {
         cout<<temp->data<<",";
@@ -348,16 +348,80 @@ int main()
 {
     myset set=CreateSet();
     myset set1=CreateSet();
-    AddinSet("kartik",&set);
-    AddinSet("pranav",&set1);
-    AddinSet("kartik",&set1);
-    AddinSet("pep",&set);
-    PrintSet(&set1);
-    PrintSet(&set);
-    myset result=Union(&set,&set1);
-    bool res=isSubset(&set1,&set);
-    PrintSet(&result);
-    myset newset = CreateSet();
-    cout<<"";
+    // AddinSet("kartik",&set);
+    // AddinSet("pranav",&set1);
+    // AddinSet("kartik",&set1);
+    // AddinSet("pep",&set);
+    // PrintSet(&set1);
+    // PrintSet(&set);
+    myset result=CreateSet();
+    // bool res=isSubset(&set1,&set);
+    // PrintSet(&result);
+    // myset newset = CreateSet();
+    // cout<<"";
+    string x="";
+    printf("Enter set1 elements(enter quit when done)\n");
+            while(x.compare("quit")!=0)
+            {
+                cin>>x;
+                if(x.compare("quit")!=0)
+                {
+                    AddinSet(x,&set);
+                }
+                
+            }
+string y="";
+            printf("Enter set2 elements(enter quit when done)\n");
+            while(y.compare("quit")!=0)
+            {
+                cin>>y;
+                if(y.compare("quit")!=0)
+                {
+                    AddinSet(y,&set1);
+                }
+                
+            }
+    while(true)
+    {
+        cout<<"\nWhat operation do you want to do?\n";
+        cout<<"1.Union\n2.Intersection\n3.Subset Check\n4.Difference\n";
+        int ans;
+        cin>>ans;
+        //cout<<"Input set1 length and set2 length\n";
+        int n,m;
+        //cin>>n>>m;
+        string x="";
+        bool f;
+        switch (ans)
+        {
+        case 1:
+            
+            result=Union(&set,&set1);
+            PrintSet(&result);
+            break;
+        
+        case 2:
+            result=Intersection(&set,&set1);
+            PrintSet(&result);
+            break;
 
+        case 3:
+            f=isSubset(&set,&set1);
+            if(f)
+            {
+                cout<<"Set1 is a subset of set2\n";
+            }
+            else
+            {
+                cout<<"Set1 is not a subset of set 2\n";
+            }
+            
+            break;
+        case 4:
+            result=Difference(&set,&set1);
+            PrintSet(&result);
+            break;
+        }
+
+    }
 }
