@@ -1,0 +1,76 @@
+	.file	"test.c"
+	.text
+	.globl	sumofN
+	.type	sumofN, @function
+sumofN:			# function code here
+.LFB0:
+	.cfi_startproc
+	endbr64	
+	pushq	%rbp	# frame pointer for this function
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	#,
+	.cfi_def_cfa_register 6
+	movl	%edi, -20(%rbp)	# n, n (initializing the passed parameter) "edi" is first passed argument
+#    			int sum=n*(n+1)/2;
+	movl	-20(%rbp), %eax	# n, temp
+	addl	$1, %eax	#, _1 # adding 1 to n
+#     			int sum=n*(n+1)/2;
+	imull	-20(%rbp), %eax	# multiplying n with n+1
+#     			int sum=n*(n+1)/2;
+	movl	%eax, %edx	# storing n(n+1) in edx
+	shrl	$31, %edx	# edx will have only one MSB here which will signify sign
+	addl	%edx, %eax	# adding shifted value to n(n+1)
+	sarl	%eax	# tmp89
+	movl	%eax, -4(%rbp)	# assign value to sum
+#               return sum;
+	movl	-4(%rbp), %eax	# sum to temp register for returning
+	popq	%rbp	# popping frame
+	.cfi_def_cfa 7, 8
+	ret	
+	.cfi_endproc
+.LFE0:
+	.size	sumofN, .-sumofN
+	.globl	main
+	.type	main, @function
+main:			# main function code here
+.LFB1:
+	.cfi_startproc
+	endbr64	
+	pushq	%rbp	# frame pointer rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	#,
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp	#,
+#      int n=5;
+	movl	$5, -4(%rbp)	# , n(Assigning immediate data to n)
+#  sumofN(n);
+	movl	-4(%rbp), %eax	# n, temp
+	movl	%eax, %edi	# edi is the parameter to be passed.
+	call	sumofN	# call instruction to call the function, PC goes to function code
+	movl	$0, %eax	
+	leave	
+	.cfi_def_cfa 7, 8
+	ret	
+	.cfi_endproc
+.LFE1:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 9.3.0-10ubuntu2) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
