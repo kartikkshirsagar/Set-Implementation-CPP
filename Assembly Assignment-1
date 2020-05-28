@@ -1,0 +1,122 @@
+	.file	"test.c"
+	.text
+	.globl	main
+	.type	main, @function
+main: # Function start main
+.LFB0:
+	.cfi_startproc
+	endbr64	
+	pushq	%rbp	# rbp is the frame pointer
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp	#,
+	.cfi_def_cfa_register 6
+	subq	$64, %rsp	#,
+	movq	%fs:40, %rax	
+	movq	%rax, -8(%rbp)	
+	xorl	%eax, %eax	    
+	# int arr[] = { 0, 23, 14, 12, 9 }; 
+	
+	movl	$0, -32(%rbp)	#, arr  # filling array with immediate data,moved 0
+	movl	$23, -28(%rbp)	#, arr  # moved 23 by taking offset of -4
+	movl	$14, -24(%rbp)	#, arr  # moved 14
+	movl	$12, -20(%rbp)	#, arr  # moved 12
+	movl	$9, -16(%rbp)	#, arr  # moved 9
+#      int n = 5; 
+	movl	$5, -40(%rbp)	#, n # moved 5 in 'n'
+#     for (i = 0; i < n - 1; i++) { 
+	movl	$0, -52(%rbp)	#, i  # declaration condition i=0
+#    for (i = 0; i < n - 1; i++) { 
+	jmp	.L2	#
+.L6: # Label 6
+         # min_idx = i; 
+	movl	-52(%rbp), %eax	# i, tmp88 Assigning value of i to min_idx
+	movl	%eax, -44(%rbp)	# tmp88, min_idx transfer by using eax register
+#         for (j = i + 1; j < n; j++) 
+	movl	-52(%rbp), %eax	# eax gets i value
+	addl	$1, %eax	# Add 1 to eax, so eax becomes i+1
+		#	j=i+1
+	movl	%eax, -48(%rbp)	# Assign eax value to j     (j=i+1)
+	jmp	.L3	#
+.L5:
+#              if (arr[j] < arr[min_idx]) 
+	movl	-48(%rbp), %eax	# moving j value to temp
+	cltq
+	movl	-32(%rbp,%rax,4), %edx	# arr, _1
+#              if (arr[j] < arr[min_idx]) 
+	movl	-44(%rbp), %eax	# min_idx, tmp96
+	cltq
+	movl	-32(%rbp,%rax,4), %eax	# arr, _2
+#              if (arr[j] < arr[min_idx]) 
+	cmpl	%eax, %edx	# comparing arr[j] with arr[min_idx]
+	jge	.L4	#,
+#                  min_idx = j; 
+	movl	-48(%rbp), %eax	# j, eax
+	movl	%eax, -44(%rbp)	# eax, min_idx
+.L4:
+#          for (j = i + 1; j < n; j++) 
+	addl	$1, -48(%rbp)	#, j # adding 1 to j (immediate)
+.L3:
+#          for (j = i + 1; j < n; j++) 
+	movl	-48(%rbp), %eax	# j, eax
+	cmpl	-40(%rbp), %eax	# comparing n with j
+	jl	.L5	#,
+#         int temp=arr[min_idx];
+	movl	-44(%rbp), %eax	# min_idx, eax Assigning
+	cltq
+	movl	-32(%rbp,%rax,4), %eax
+	movl	%eax, -36(%rbp)
+#         arr[min_idx]=arr[i];
+	movl	-52(%rbp), %eax	# i, temp (assigning to temp variable) 
+	cltq
+	movl	-32(%rbp,%rax,4), %edx	
+#         arr[min_idx]=arr[i];
+	movl	-44(%rbp), %eax	
+	cltq						# assignment(arr[min_idx]=arr[i]) using temp variables
+	movl	%edx, -32(%rbp,%rax,4)
+#         arr[i]=temp;
+	movl	-52(%rbp), %eax	
+	cltq						# assignment(arr[i]=temp) using temp variables
+	movl	-36(%rbp), %edx	
+	movl	%edx, -32(%rbp,%rax,4)	# tmp108, arr
+#      for (i = 0; i < n - 1; i++) { 
+	addl	$1, -52(%rbp)	#, i
+.L2:
+#      for (i = 0; i < n - 1; i++) { 
+	movl	-40(%rbp), %eax	# n, temp
+	subl	$1, %eax	# subtract 1 from n
+#      for (i = 0; i < n - 1; i++) { 
+	cmpl	%eax, -52(%rbp)	# compare n and i
+	jl	.L6	#,			# jump to L6
+#      return 0; 
+	movl	$0, %eax	# for return 0 
+#  } 
+	movq	-8(%rbp), %rcx
+	xorq	%fs:40, %rcx	
+	je	.L8	#,
+	call	__stack_chk_fail@PLT	#
+.L8:
+	leave	
+	.cfi_def_cfa 7, 8
+	ret	
+	.cfi_endproc
+.LFE0:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 9.3.0-10ubuntu2) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
